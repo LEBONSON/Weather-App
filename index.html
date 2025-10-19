@@ -34,5 +34,42 @@
         
     </div>
 </div>
-</body>
+
+<script>
+
+const apiKey = "52ffc751b65f5b8ae6ae4273f0760ef3"; // clé d'API pour OpenWeatherMap qui permet d'accéder aux données météorologiques.
+const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q="; // URL de l'API OpenWeatherMap pour obtenir les données météorologiques de la ville de Yaoundé en utilisant les unités métriques (Celsius).
+
+const searchBox = document.querySelector(".search input"); // Sélectionne l'élément input dans la div avec la classe "search" pour permettre à l'utilisateur de saisir le nom de la ville.
+const searchBtn = document.querySelector(".search button"); // Sélectionne le bouton dans la div avec la classe "search" pour permettre à l'utilisateur de lancer la recherche météo.
+
+
+// Fonction asynchrone  pour vérifier la météo en récupérant les données de l'API et les affichant dans la console.
+//Une fonction asynchrone permet d'utiliser l'instruction await à l'intérieur de la fonction, ce qui facilite la gestion des opérations asynchrones comme les appels réseau.
+async function checkWeather(city){
+    //const response = await fetch(`${apiUrl}&appid=${apiKey}`);
+    const response = await fetch(apiUrl + city + `&appid=${apiKey}`); // Effectue une requête fetch pour obtenir les données météorologiques en ajoutant la clé d'API à l'URL de l'API.
+    var data = await  response.json(); // Attend la réponse de la requête fetch et convertit la réponse en format JSON.
+    console.log(data); // Affiche les données météorologiques récupérées dans la console du navigateur.
+
+    document.querySelector(".city").innerHTML = data.name; // Met à jour le nom de la ville dans l'élément HTML avec la classe "city".
+    document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°c"; // Met à jour la température dans l'élément HTML avec la classe "temp".
+    document.querySelector(".Humidity").innerHTML = data.main.humidity+ "%"; // Met à jour l'humidité dans l'élément HTML avec la classe "Humidity".
+    document.querySelector(".Wind").innerHTML = data.wind.speed+ " km/h"; // Met à jour la vitesse du vent dans l'élément HTML avec la classe "Wind".
+}
+
+
+
+
+searchBtn.addEventListener("click", ()=>{ // Ajoute un écouteur d'événements au bouton de recherche pour détecter les clics.
+    checkWeather(searchBox.value); // Appelle la fonction checkWeather avec la valeur saisie dans la boîte de recherche lorsque le bouton est cliqué.
+});
+
+//checkWeather();  Appelle la fonction checkWeather pour exécuter le code et obtenir les données météorologiques.
+
+
+</script>
+
+
+</body> 
 </html> 
