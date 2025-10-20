@@ -11,6 +11,9 @@
         <input type="'text" placeholder="Enter city name" spellcheck="false">
         <button><img src="images/search.png"></button>
     </div>
+    <div class="error">
+        <p>Invalid city name  </p>
+    </div>
     <div class="weather">
         <img src="images/rain.png" class="weather-icon">
         <h1 class="temp">22°C</h1>
@@ -42,6 +45,8 @@ const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q="
 
 const searchBox = document.querySelector(".search input"); // Sélectionne l'élément input dans la div avec la classe "search" pour permettre à l'utilisateur de saisir le nom de la ville.
 const searchBtn = document.querySelector(".search button"); // Sélectionne le bouton dans la div avec la classe "search" pour permettre à l'utilisateur de lancer la recherche météo.
+const weatherIcon = document.querySelector(".weather-icon"); // Sélectionne l'élément image avec la classe "weather-icon" pour afficher l'icône météo correspondante.
+
 
 
 // Fonction asynchrone  pour vérifier la météo en récupérant les données de l'API et les affichant dans la console.
@@ -49,13 +54,46 @@ const searchBtn = document.querySelector(".search button"); // Sélectionne le b
 async function checkWeather(city){
     //const response = await fetch(`${apiUrl}&appid=${apiKey}`);
     const response = await fetch(apiUrl + city + `&appid=${apiKey}`); // Effectue une requête fetch pour obtenir les données météorologiques en ajoutant la clé d'API à l'URL de l'API.
-    var data = await  response.json(); // Attend la réponse de la requête fetch et convertit la réponse en format JSON.
-    console.log(data); // Affiche les données météorologiques récupérées dans la console du navigateur.
+  
+    if (response.status == 404){ // Vérifie si le statut de la réponse est 404, ce qui indique que la ville n'a pas été trouvée.
+        document.querySelector(".weather").style.display = "none"; // Masque la div avec la classe "weather" en modifiant son style CSS pour la rendre invisible.
+        document.querySelector(".error").style.display = "block"; // Affiche la div avec la classe "error" en modifiant son style CSS pour la rendre visible.
+        return; // Quitte la fonction si la ville n'est pas trouvée.
+    }else{
+          var data = await  response.json(); // Attend la réponse de la requête fetch et convertit la réponse en format JSON.
+    
+    //console.log(data); // Affiche les données météorologiques récupérées dans la console du navigateur.
 
     document.querySelector(".city").innerHTML = data.name; // Met à jour le nom de la ville dans l'élément HTML avec la classe "city".
     document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°c"; // Met à jour la température dans l'élément HTML avec la classe "temp".
     document.querySelector(".Humidity").innerHTML = data.main.humidity+ "%"; // Met à jour l'humidité dans l'élément HTML avec la classe "Humidity".
     document.querySelector(".Wind").innerHTML = data.wind.speed+ " km/h"; // Met à jour la vitesse du vent dans l'élément HTML avec la classe "Wind".
+
+
+    if (data.weather[0].main =="Clouds"){
+        weatherIcon.src = "images/clouds.png"; //  Met à jour l'icône météo en fonction des conditions météorologiques.
+    }
+    else if (data.weather[0].main =="Clear"){
+        weatherIcon.src = "images/clear.png";
+    }
+    else if (data.weather[0].main =="Rain"){
+        weatherIcon.src = "images/rain.png";
+    }
+    else if (data.weather[0].main =="Drizzle"){
+        weatherIcon.src = "images/drizzle.png";
+    }
+    else if (data.weather[0].main =="Mist"){
+        weatherIcon.src = "images/mist.png";
+    }
+
+    document.querySelector(".weather").style.display = "block"; // Affiche la div avec la classe "weather" en modifiant son style CSS pour la rendre visible.
+    document.querySelector(".error").style.display = "none"; // Masque la div avec la classe "error" en modifiant son style CSS pour la rendre invisible.
+
+    }
+  
+  
+  
+  
 }
 
 
